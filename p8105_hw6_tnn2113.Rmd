@@ -9,6 +9,7 @@ This is my solution to HW6.
 ```{r setup, include = FALSE}
 library(tidyverse)
 library(dplyr)
+library(modelr)
 
 
 knitr::opts_chunk$set(
@@ -50,4 +51,14 @@ proposed_model = lm(bwt ~ babysex + momage + ppbmi, data = birthweight_df)
 
 ```
 
+
+Plot of model residuals against fitted values
+
+```{r}
+birthweight_df %>% 
+  add_predictions(proposed_model) %>% 
+  add_residuals(proposed_model) %>% 
+  ggplot(aes(x = pred, y = resid)) + 
+  geom_point()
+```
 

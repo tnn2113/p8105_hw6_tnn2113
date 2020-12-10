@@ -124,3 +124,38 @@ weather_df =
   select(name, id, everything())
 ```
 
+Create 5000 bootstrap samples
+
+```{r}
+bootstrap_df = 
+  weather_df %>% 
+  bootstrap(n = 5000)
+```
+
+Find and plot the distributions of $\hat{r}^2$ and $log(\hat\beta_0 * \hat\beta_1)$
+
+
+```{r}
+sample_df = 
+  bootstrap_df %>% 
+  mutate(
+    models = map(strap, ~lm(tmax ~ tmin, data = .x)),
+    r_hat_distribution = map(models, broom::glance),
+    log_distribution = map(models, broom::tidy)
+  ) %>% 
+  select(-strap, -models)
+```
+
+$\hat{r}^2$ plot
+```{r}
+sample_df %>% 
+  unnest(r_hat_distribution) %>% 
+  ggplot(aes(x = r.squared)) + 
+  geom_density()
+```
+
+
+
+
+
+

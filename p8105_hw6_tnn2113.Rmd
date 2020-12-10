@@ -148,14 +148,51 @@ sample_df =
 
 $\hat{r}^2$ plot
 ```{r}
-sample_df %>% 
-  unnest(r_hat_distribution) %>% 
+r_df = 
+  sample_df %>% 
+  unnest(r_hat_distribution)
+
+r_df %>% 
   ggplot(aes(x = r.squared)) + 
   geom_density()
 ```
 
+Based on the plot above, the distribution of $\hat{r}^2$ is relatively normal 
+
+Identify the 2.5% and 97.5% quantiles
+```{r}
+unname(quantile(pull(r_df, r.squared), 0.025))
+unname(quantile(pull(r_df, r.squared), 0.975))
+```
+Based on the code chunk above, the 95% confidence interval for $\hat{r}^2$ is (0.893591, 0.927841)
 
 
+$log(\hat\beta_0 * \hat\beta_1)$ plot
+
+```{r}
+log_df = 
+  sample_df %>% 
+  unnest(log_distribution) %>% 
+  pivot_wider(.id:estimate,
+    names_from = term, 
+    values_from = estimate) %>% 
+  select(-r_hat_distribution) %>% 
+  rename("intercept" = "(Intercept)") %>% 
+  mutate(log_distribution = log(intercept*tmin))
+
+log_df %>% 
+  ggplot(aes(x = log_distribution)) + 
+  geom_density()
+```
+
+Based on the plot above, the distribution of $log(\hat\beta_0 * \hat\beta_1)$is also normal. 
+
+Identify the 2.5% and 97.5% quantiles
+```{r}
+unname(quantile(pull(log_df, log_distribution), 0.025))
+unname(quantile(pull(log_df, log_distribution), 0.975))
+```
+Based on the code chunk above, the 95% confidence interval for $log(\hat\beta_0 * \hat\beta_1)$ is (1.9744, 2.0599)
 
 
 

@@ -1,7 +1,10 @@
 ---
 title: "Homework 6"
 author: Tu  Nguyen
-output: github_document
+output: 
+  github_document:
+    pandoc_args: --webtex
+  
 ---
 
 This is my solution to HW6.
@@ -146,7 +149,7 @@ sample_df =
   select(-strap, -models)
 ```
 
-$\hat{r}^2$ plot
+ $\hat{r}^2$ plot
 ```{r}
 r_df = 
   sample_df %>% 
